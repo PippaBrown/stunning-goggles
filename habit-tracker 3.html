@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>habit tracker</title>
+<link rel="apple-touch-icon" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAALQAAAC0CAIAAACyr5FlAAABWElEQVR4nO3csUkDQBiA0SgOIKSztU/vEFnAARwihYWIRbYQxNhbZRUhA6QSnMAJPkwg4aK+Vx93f/FxzcFNJgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAMCPzkYPcBg3s/n93WrHxbeL68+v7b5HvDx+TC+vdln5tl4+vz/su/8JOh89AKdLHCRxkMRBEgdJHCRxkMRBEgdJHCRxkMRBEgdJHCRxkMRBEgdJHCRxkMRBEgdJHCRxkMRBEgdJHCRxkC5GDzDA69Nm9Ai/g5uDJA6SOEjiIImDJA6SOEjiIImDJA6SOEjiIP3Hh7djf1L7Z7g5SOIgiYMkDpI4SOIgiYMkDpI4SOIgiYMkDpI4SOIgiYMkDpI4SOIgiYMkDpI4SOIgiYMkDpI4SOIgiYMkDpI4SOIgiQMAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAjuIb59kUnw5LYp8AAAAASUVORK5CYII=">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#0d1117;--bg2:#161b22;--bg3:#21262d;--bg4:#30363d;
+  --text:#e6edf3;--text2:#8b949e;--text3:#6e7681;
+  --border:#30363d;--border2:#21262d;
+  --lilac:#7c3aed;--lilac-light:#b794f4;--lilac-dim:#1e1035;
+  
+  --rose:#c9517a;--rose-light:#f0a0be;--rose-dim:#2a1020;
+  --blue:#38bdf8;--blue-dim:#0c2233;--blue-light:#7dd3fc;
+  --radius:6px;--radius-lg:12px;--radius-xl:18px;
+  --amber-light:#fbbf5a;
+}
+html,body{background:var(--bg);color:var(--text);font-family:'Space Grotesk',sans-serif;font-size:14px;min-height:100vh}
+#app{padding:20px 16px 56px;max-width:430px;margin:0 auto}
+
+.header{margin-bottom:24px;padding-bottom:18px;border-bottom:1px solid var(--border2);text-align:center}
+.title{font-size:22px;font-weight:600;color:var(--text);letter-spacing:-.02em}
+.subtitle{font-size:11px;color:var(--text);margin-top:4px;font-family:'Space Mono',monospace;letter-spacing:.08em;text-transform:uppercase}
+
+.section-label{font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--lilac-light);margin-bottom:12px;font-family:'Space Mono',monospace}
+
+/* month nav */
+
+
+/* modal */
+
+
+
+
+/* daily habit cards */
+.daily-card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius-lg);padding:14px;margin-bottom:12px}
+.daily-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}
+.daily-name{font-size:13px;font-weight:700;font-family:'Space Mono',monospace}
+.daily-card .daily-name{color:var(--card-col)}
+.daily-streaks{display:flex;gap:6px}
+.daily-stat{text-align:center;background:var(--bg3);border-radius:6px;padding:3px 8px}
+.daily-stat-val{font-size:12px;font-weight:700;color:var(--text2);font-family:'Space Mono',monospace}
+.daily-stat-lbl{font-size:7px;font-weight:500;color:var(--text3);text-transform:uppercase;letter-spacing:.04em}
+.daily-btn{width:100%;padding:6px;border:1.5px dashed var(--border);border-radius:var(--radius);background:rgba(255,255,255,.04);color:var(--text2);font-family:'Space Mono',monospace;font-size:11px;cursor:pointer;transition:all .2s;margin-bottom:10px}
+.daily-card .daily-btn.done{border-style:solid;background:var(--card-coldim);border-color:var(--card-colborder);color:var(--card-col)}
+
+/* daily grid */
+.daily-grid{display:grid;grid-template-columns:repeat(28,1fr);grid-template-rows:repeat(7,1fr);grid-auto-flow:column;gap:2px;width:100%;aspect-ratio:28/7}
+.dg-cell{border-radius:2px;min-width:0;min-height:0}
+.dg-cell.empty{background:transparent}
+.dg-cell.future{background:var(--bg3);opacity:.4}
+.dg-cell.unset{background:var(--bg4)}
+.dg-cell.done-job{background:#00e5ff}
+.dg-cell.done-uni{background:#9933ff}
+.dg-cell.done-song{background:#ff00aa}
+.dg-cell.done-read{background:#ff8800}
+.dg-cell.done-exer{background:#ff2222}
+.dg-cell.today-ring-job{outline:2px solid #00e5ff;outline-offset:1px;border-radius:2px}
+.dg-cell.today-ring-uni{outline:2px solid #9933ff;outline-offset:1px;border-radius:2px}
+.dg-cell.today-ring-song{outline:2px solid #ff00aa;outline-offset:1px;border-radius:2px}
+.dg-cell.today-ring-read{outline:2px solid #ff8800;outline-offset:1px;border-radius:2px}
+.dg-cell.today-ring-exer{outline:2px solid #ff2222;outline-offset:1px;border-radius:2px}
+
+#toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:var(--bg4);border:1px solid var(--border);padding:9px 18px;border-radius:20px;font-size:12px;color:var(--lilac-light);opacity:0;transition:opacity .25s;pointer-events:none;white-space:nowrap;z-index:999;font-family:'Space Mono',monospace}
+#toast.show{opacity:1}
+</style>
+</head>
+<body>
+<div id="toast"></div>
+
+<div id="app">
+  <div class="header">
+    <div class="title">habit tracker</div>
+    <div class="subtitle">2026</div>
+  </div>
+
+  <div id="daily-cards"></div>
+</div>
+
+<script>
+var ACTS=[
+  {id:'swim',    label:'swimming',     icon:''},
+  {id:'skate',   label:'ice skating',  icon:''},
+  {id:'cycle',   label:'cycling',      icon:''},
+  {id:'run',     label:'running',      icon:''},
+  {id:'workout', label:'workout',      icon:''},
+];
+var DAILY=[
+  {id:'job',  label:'job',      colour:'job',  col:'#00e5ff', coldim:'#001a22', colborder:'#006688'},
+  {id:'uni',  label:'uni work', colour:'uni',  col:'#9933ff', coldim:'#14003a', colborder:'#5500cc'},
+  {id:'song', label:'song',     colour:'song', col:'#ff00aa', coldim:'#220016', colborder:'#aa0066'},
+  {id:'read', label:'reading',  colour:'read', col:'#ff8800', coldim:'#221000', colborder:'#aa4400'},
+  {id:'exer', label:'exercise', colour:'exer', col:'#ff2222', coldim:'#220000', colborder:'#aa0000'},
+];
+var GRID_START=new Date(2026,7,8);
+var GRID_END=new Date(2027,1,21); // exclusive, so last cell = 20 Feb
+
+
+
+
+function pad(n){return String(n).padStart(2,'0');}
+function dateKey(d){return d.getFullYear()+'-'+pad(d.getMonth()+1)+'-'+pad(d.getDate());}
+
+function todayKey(){return dateKey(new Date());}
+function todayDate(){var d=new Date();d.setHours(0,0,0,0);return d;}
+
+function loadData(){try{return JSON.parse(localStorage.getItem('ht26v2')||'{}')}catch(e){return {};}}
+function saveData(d){localStorage.setItem('ht26v2',JSON.stringify(d));}
+
+var data=loadData();
+if(!data.acts)data.acts={};
+if(!data.daily)data.daily={};
+DAILY.forEach(function(h){if(!data.daily[h.id])data.daily[h.id]={};});
+saveData(data);
+
+function showToast(msg){
+  var t=document.getElementById('toast');
+  t.textContent=msg;t.classList.add('show');
+  setTimeout(function(){t.classList.remove('show');},1800);
+}
+
+// --- Monthly ---
+window.changeMonth=function(dir){
+  currentMonth=Math.max(0,Math.min(11,currentMonth+dir));
+  };
+
+window.modalSave=function(){
+  var note=document.getElementById('modal-note').value.trim();
+  if(!data.acts[modalMonthKey])data.acts[modalMonthKey]={};
+  data.acts[modalMonthKey][modalActivity]={done:true,note:note,date:todayKey()};
+  saveData(data);
+  document.getElementById('modal').classList.add('hidden');
+  showToast('logged \u2713');
+  };
+window.modalRemove=function(){
+  if(data.acts[modalMonthKey])delete data.acts[modalMonthKey][modalActivity];
+  saveData(data);
+  document.getElementById('modal').classList.add('hidden');
+  showToast('removed');
+  };
+window.modalClose=function(){
+  document.getElementById('modal').classList.add('hidden');
+};
+
+function openModal(actId){
+  var mk=monthKey(currentMonth);
+  modalActivity=actId; modalMonthKey=mk;
+  var act=ACTS.find(function(a){return a.id===actId;});
+  var existing=data.acts[mk]&&data.acts[mk][actId];
+  document.getElementById('modal-title').textContent=act.label;
+  document.getElementById('modal-sub').textContent=MONTHS[currentMonth]+' 2026';
+  document.getElementById('modal-note').value=existing?existing.note||'':'';
+  document.getElementById('modal-remove-wrap').style.display=existing?'block':'none';
+  document.getElementById('modal').classList.remove('hidden');
+}
+
+function renderActivities(){
+  document.getElementById('month-label').textContent=MONTHS[currentMonth];
+  var mk=monthKey(currentMonth);
+  var md=data.acts[mk]||{};
+  var c=document.getElementById('activities');
+  c.innerHTML='';
+  ACTS.forEach(function(act){
+    var entry=md[act.id];
+    var done=!!(entry&&entry.done);
+    var row=document.createElement('div');
+    row.className='activity-row'+(done?' done':'');
+    var noteText=done?(entry.note||entry.date||'done'):'tap to log';
+    var noteColour=done?'var(--text3)':'var(--border2)';
+    row.innerHTML=
+      '<div class="activity-info">'+
+        '<div class="activity-name">'+act.label+'</div>'+
+        '<div class="activity-note" style="color:'+noteColour+'">'+noteText+'</div>'+
+      '</div>'+
+      '<div class="activity-check">'+(done?'✓':'')+'</div>';
+    row.addEventListener('click',function(){openModal(act.id);});
+    c.appendChild(row);
+  });
+}
+
+// --- Daily ---
+function getStreak(id){
+  var today=todayDate(),streak=0,d=new Date(today);
+  while(true){
+    var k=dateKey(d);
+    if(data.daily[id][k])streak++;
+    else if(d<today)break;
+    d.setDate(d.getDate()-1);
+    if(d<GRID_START)break;
+  }
+  return streak;
+}
+function getBest(id){
+  var keys=Object.keys(data.daily[id]).filter(function(k){return data.daily[id][k];}).sort();
+  if(!keys.length)return 0;
+  var best=1,cur=1;
+  for(var i=1;i<keys.length;i++){
+    var diff=(new Date(keys[i])-new Date(keys[i-1]))/(864e5);
+    if(diff===1){cur++;if(cur>best)best=cur;}else cur=1;
+  }
+  return best;
+}
+
+window.toggleDaily=function(id){
+  var k=todayKey();
+  if(data.daily[id][k])delete data.daily[id][k];
+  else data.daily[id][k]=true;
+  saveData(data);
+  renderDaily();
+  showToast(data.daily[id][k]?'logged \u2713':'unmarked');
+};
+
+function buildDailyGrid(id,colour){
+  var today=todayDate(),todayK=todayKey(),TOTAL=28*7,html='';
+  for(var i=0;i<TOTAL;i++){
+    var d=new Date(GRID_START);
+    d.setDate(GRID_START.getDate()+i);
+    var k=dateKey(d);
+    if(d>GRID_END){html+='<div class="dg-cell empty"></div>';continue;}
+    var isFuture=d>today,isDone=!!data.daily[id][k],isToday=k===todayK;
+    var cls='dg-cell';
+    if(isFuture)cls+=' future';
+    else if(isDone)cls+=' done-'+id;
+    else cls+=' unset';
+    if(isToday)cls+=' today-ring-'+id;
+    html+='<div class="'+cls+'"></div>';
+  }
+  return html;
+}
+
+function renderDaily(){
+  var c=document.getElementById('daily-cards');
+  c.innerHTML='';
+  DAILY.forEach(function(h){
+    var streak=getStreak(h.id),best=getBest(h.id),done=!!data.daily[h.id][todayKey()];
+    var card=document.createElement('div');
+    card.className='daily-card '+h.colour;
+    card.style.setProperty('--card-col',h.col);
+    card.style.setProperty('--card-coldim',h.coldim);
+    card.style.setProperty('--card-colborder',h.colborder);
+    card.innerHTML=
+      '<div class="daily-header">'+
+        '<div class="daily-name">'+h.label+'</div>'+
+        '<div class="daily-streaks">'+
+          '<div class="daily-stat"><div class="daily-stat-lbl">current streak</div><div class="daily-stat-val">'+streak+'</div></div>'+
+          '<div class="daily-stat"><div class="daily-stat-lbl">best streak</div><div class="daily-stat-val">'+best+'</div></div>'+
+        '</div>'+
+      '</div>'+
+      '<button class="daily-btn'+(done?' done':'')+'" onclick="window.toggleDaily(\''+h.id+'\')">'+
+        (done?'\u2713 done':'mark as done')+
+      '</button>'+
+      '<div class="daily-grid">'+buildDailyGrid(h.id,h.colour)+'</div>';
+    c.appendChild(card);
+  });
+}
+
+renderDaily();
+</script>
+</body>
+</html>
